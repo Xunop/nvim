@@ -1,0 +1,53 @@
+return {
+	-- formatting code
+	{
+		{
+			"stevearc/conform.nvim",
+			lazy = true,
+			version = "v9.0.0",
+			event = { "BufReadPost", "BufNewFile" },
+			cmd = "ConformInfo",
+			-- the formatters use mason installed
+			dependencies = { "williamboman/mason.nvim" },
+			keys = {
+				{
+					"<leader>lf",
+					function()
+						require("conform").format({}, function(err, did_edit)
+							if err then
+								vim.notify("Formatting failed: " .. err, vim.log.levels.ERROR)
+							elseif did_edit then
+								vim.notify("Formatted successfully", vim.log.levels.INFO)
+							else
+								vim.notify("No changes made by formatter", vim.log.levels.INFO)
+							end
+							-- print('aa')
+						end)
+					end,
+					mode = { "n", "v" },
+					desc = "Format Buffer",
+				},
+			},
+			opts = {
+				log_level = vim.log.levels.INFO,
+				default_format_opts = {
+					timeout_ms = 3000,
+					async = false, -- not recommended to change
+					quiet = false, -- not recommended to change
+					lsp_format = "fallback", -- not recommended to change
+				},
+				formatters_by_ft = {
+					lua = { "stylua" },
+					go = { "goimports", "gofmt" },
+					sh = { "shfmt" },
+					python = { "isort", "black" },
+					javascript = { "prettierd", "prettier", stop_after_first = true },
+					typescript = { "prettierd", "prettier", stop_after_first = true },
+					typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+					javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+					-- fish = { "fish_indent" },
+				},
+			},
+		},
+	},
+}
